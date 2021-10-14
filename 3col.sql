@@ -24,12 +24,12 @@ insert into edge select u.c, v.c from vertex u, vertex v where u.c != v.c;
 --  (1, 2), (2, 3), (3, 1)
 
 select distinct
-	-- Read off the coloring of all nodes
+	-- Read off the coloring of all vertices
 	v1.c as c1,
 	v2.c as c2,
 	v3.c as c3
 from
-	-- Declare nodes
+	-- Declare vertices
 	vertex as v1,
 	vertex as v2,
 	vertex as v3,
