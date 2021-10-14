@@ -6,22 +6,15 @@
 
 -- Implementation --------------------------------------------------------------
 
--- Edges
-create temporary table edge (s smallint, t smallint);
-insert into edge values 
-	(1, 2),
-	(1, 3),
-	(2, 1),
-	(2, 3),
-	(3, 1),
-	(3, 2);
+create type color as enum ('r', 'g', 'b');
 
--- Nodes
-create temporary table node (c smallint);
-insert into node values
-	(1),
-	(2),
-	(3);
+-- Vertices
+create temporary table vertex (c color);
+insert into vertex values ('r'), ('g'), ('b');
+
+-- Edges
+create temporary table edge (u color, v color);
+insert into edge select u.c, v.c from vertex u, vertex v where u.c != v.c;
 
 -- Test ------------------------------------------------------------------------
 
@@ -32,28 +25,28 @@ insert into node values
 
 select distinct
 	-- Read off the coloring of all nodes
-	n1.c as c1,
-	n2.c as c2,
-	n3.c as c3
+	v1.c as c1,
+	v2.c as c2,
+	v3.c as c3
 from
 	-- Declare nodes
-	node as n1,
-	node as n2,
-	node as n3,
+	vertex as v1,
+	vertex as v2,
+	vertex as v3,
 	-- Declare edges
 	edge as e1,
 	edge as e2,
 	edge as e3
 where
 	-- Define edge 1
-	e1.s = n1.c and
-	e1.t = n2.c and
+	e1.u = v1.c and
+	e1.v = v2.c and
 	-- Define edge 2
-	e2.s = n2.c and
-	e2.t = n3.c and
+	e2.u = v2.c and
+	e2.v = v3.c and
 	-- Define edge 3
-	e3.s = n3.c and
-	e3.t = n1.c ;
+	e3.u = v3.c and
+	e3.v = v1.c ;
 
 -- Expected Output:
 --  c1 | c2 | c3 
@@ -66,4 +59,4 @@ where
 --  b  | g  | r
 -- (6 rows)
 
--- Tested with PostgreSQL 9.6.8
+-- Tested with PostgreSQL 10
